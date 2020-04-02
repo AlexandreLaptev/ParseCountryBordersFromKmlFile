@@ -1,0 +1,250 @@
+CountryId,Name,Alpha2,Alpha3,AffiliationId
+1,Afghanistan,AF,AFG,3
+2,Aland Islands,AX,ALA,3
+3,Albania,AL,ALB,3
+4,Algeria,DZ,DZA,3
+5,American Samoa,AS,ASM,3
+6,Andorra,AD,AND,3
+7,Angola,AO,AGO,3
+8,Anguilla,AI,AIA,3
+9,Antarctica,AQ,ATA,3
+10,Antigua and Barbuda,AG,ATG,3
+11,Argentina,AR,ARG,3
+12,Armenia,AM,ARM,3
+13,Aruba,AW,ABW,3
+14,Australia,AU,AUS,2
+15,Austria,AT,AUT,3
+16,Azerbaijan,AZ,AZE,3
+17,Bahamas,BS,BHS,3
+18,Bahrain,BH,BHR,3
+19,Bangladesh,BD,BGD,3
+20,Barbados,BB,BRB,3
+21,Belarus,BY,BLR,3
+22,Belgium,BE,BEL,3
+23,Belize,BZ,BLZ,3
+24,Benin,BJ,BEN,3
+25,Bermuda,BM,BMU,3
+26,Bhutan,BT,BTN,3
+27,Bolivia; Plurinational State of,BO,BOL,3
+28,Bonaire; Sint Eustatius and Saba,BQ,BES,3
+29,Bosnia and Herzegovina,BA,BIH,3
+30,Botswana,BW,BWA,3
+31,Bouvet Island,BV,BVT,3
+32,Brazil,BR,BRA,2
+33,British Indian Ocean Territory,IO,IOT,3
+34,Brunei; Darussalam,BN,BRN,3
+35,Bulgaria,BG,BGR,3
+36,Burkina Faso,BF,BFA,3
+37,Burundi,BI,BDI,3
+38,Cambodia,KH,KHM,3
+39,Cameroon,CM,CMR,3
+40,Canada,CA,CAN,2
+41,Cape Verde,CV,CPV,3
+42,Cayman Islands,KY,CYM,3
+43,Central African Republic,CF,CAF,3
+44,Chad,TD,TCD,3
+45,Chile,CL,CHL,3
+46,China,CN,CHN,4
+47,Christmas Island,CX,CXR,3
+48,Cocos (Keeling) Islands,CC,CCK,3
+49,Colombia,CO,COL,3
+50,Comoros,KM,COM,3
+51,Congo,CG,COG,3
+52,Congo; the Democratic Republic of the,CD,COD,3
+53,Cook Islands,CK,COK,3
+54,CostaRica,CR,CRI,3
+55,Cote d'lovoire,CI,CIV,3
+56,Croatia,HR,HRV,3
+57,Cuba,CU,CUB,3
+58,Curacao,CW,CUW,3
+59,Cyprus,CY,CYP,3
+60,Czech Republic,CZ,CZE,3
+61,Denmark,DK,DNK,2
+62,Djibouti,DJ,DJI,3
+63,Dominica,DM,DMA,3
+64,Dominican Republic,DO,DOM,3
+65,Ecuador,EC,ECU,3
+66,Egypt,EG,EGY,3
+67,El Salvador,SV,SLV,3
+68,Equatorial Guinea,GQ,GNQ,3
+69,Eritrea,ER,ERI,3
+70,Estonia,EE,EST,3
+71,Ethiopia,ET,ETH,3
+72,Falkland Islands (Malvinas),FK,FLK,3
+73,Faroe Islands,FO,FRO,3
+74,Fiji,FJ,FJI,3
+75,Finland,FI,FIN,2
+76,France,FR,FRA,2
+77,French Guiana,GF,GUF,2
+78,French Polynesia,PF,PYF,2
+79,French Souther Territories,TF,ATF,2
+80,Gabon,GA,GAB,3
+81,Gambia,GM,GMB,3
+82,Georgia,GE,GEO,3
+83,Germany,DE,DEU,2
+84,Ghana,GH,GHA,3
+85,Gibraltar,GI,GIB,3
+86,Greece,GR,GRC,3
+87,Greenland,GL,GRL,2
+88,Grenada,GD,GRD,3
+89,Guadeloupe,GP,GLP,3
+90,Guam,GU,GUM,3
+91,Guatemala,GT,GTM,3
+92,Guernsey,GG,GGY,3
+93,Guinea,GN,GIN,3
+94,Guinea-Bissau,GW,GNB,3
+95,Guyana,GY,GUY,3
+96,Haiti,HT,HTI,3
+97,Heard Island and McDonald Islands,HM,HMD,3
+98,Holy See (Vatican City State),VA,VAT,2
+99,Honduras,HN,HND,3
+100,Hong Kong,HK,HKG,2
+101,Hungary,HU,HUN,3
+102,Iceland,IS,ISL,2
+103,India,IN,IND,3
+104,Indonesia,ID,IDN,3
+105,Iran; Islamic Republic of,IR,IRN,4
+106,Iraq,IQ,IRQ,4
+107,Ireland,IE,IRL,3
+108,Isle of Man,IM,IMN,3
+109,Israel,IL,ISR,2
+110,Italy,IT,ITA,2
+111,Jamaica,JM,JAM,2
+112,Japan,JP,JPN,2
+113,Jersey,JE,JEY,3
+114,Jordan,JO,JOR,3
+115,Kazakhstan,KZ,KAZ,3
+116,Kenya,KE,KEN,3
+117,Kiribati,KI,KIR,3
+118,Korea; Democratic People's Republic of,KP,PRK,4
+119,Korea; Republic of,KR,KOR,2
+120,Kuwait,KW,KWT,3
+121,Kyrgyzstan,KG,KGZ,3
+122,Lao; People's Democratic Republic,LA,LAO,3
+123,Latvia,LV,LVA,3
+124,Lebanon,LB,LBN,3
+125,Lesotho,LS,LSO,3
+126,Liberia,LR,LBR,3
+127,Libya,LY,LBY,3
+128,Liechtenstein,LI,LIE,3
+129,Lithuania,LT,LTU,3
+130,Luxembourg,LU,LUX,3
+131,Macao,MO,MAC,3
+132,Macedonia; The Former Yugoslav Republic of,MK,MKD,3
+133,Madagascar,MG,MDG,3
+134,Malawi,MW,MWI,3
+135,Malaysia,MY,MYS,3
+136,Maldives,MV,MDV,3
+137,Mali,ML,MLI,3
+138,Malta,MT,MLT,3
+139,Marshall Islands,MH,MHL,3
+140,Martinique,MQ,MTQ,3
+141,Mauritania,MR,MRT,3
+142,Mauritius,MU,MUS,3
+143,Mayotte,YT,MYT,3
+144,Mexico,MX,MEX,3
+145,Micronesia; Federated Staes of,FM,FSM,3
+146,Moldova; Republic of,MD,MDA,3
+147,Monaco,MC,MCO,3
+148,Mongolia,MN,MNG,3
+149,Montenegro,ME,MNE,3
+150,Montserrat,MS,MSR,3
+151,Morocco,MA,MAR,2
+152,Mozambique,MZ,MOZ,3
+153,Myanmar,MM,MMR,3
+154,Namibia,NA,NAM,3
+155,Nauru,NR,NRU,3
+156,Nepal,NP,NPL,3
+157,Netherlands,NL,NLD,2
+158,New Caledonia,NC,NCL,3
+159,New Zealand,NZ,NZL,2
+160,Nicaragua,NI,NIC,3
+161,Niger,NE,NER,3
+162,Nigeria,NG,NGA,3
+163,Niue,NU,NIU,3
+164,Norfolk Island,NF,NFK,3
+165,Northern Mariana Islands,MP,MNP,3
+166,Norway,NO,NOR,3
+167,Oman,OM,OMN,3
+168,Pakistan,PK,PAK,3
+169,Palau,PW,PLW,3
+170,Palestine; State of,PS,PSE,3
+171,Panama,PA,PAN,3
+172,Papua New Guinea,PG,PNG,3
+173,Paraguay,PY,PRY,3
+174,Peru,PE,PER,3
+175,Philippines,PH,PHL,2
+176,Pitcairn,PN,PCN,3
+177,Poland,PL,POL,3
+178,Portugal,PT,PRT,3
+179,Puerto Rico,PR,PRI,3
+180,Qatar,QA,QAT,3
+181,Reunion,RE,REU,3
+182,Romania,RO,ROU,3
+183,Russian Federation,RU,RUS,4
+184,Rwanda,RW,RWA,3
+185,Saint Barthelemy,BL,BLM,3
+186,Saint Helena; Ascension and Tristand da Cunha,SH,SHN,3
+187,Saint Kitts and Nevis,KN,KNA,3
+188,Saint Lucia,LC,LCA,3
+189,Saint Martin (French part),MF,MAF,3
+190,Saint Pierre and Miquelon,PM,SPM,3
+191,Saint Vincent and the Grenadines,VC,VCT,3
+192,Samoa,WS,WSM,3
+193,San Marino,SM,SMR,3
+194,Sao Tome and Principe,ST,STP,3
+195,Saudi Arabia,SA,SAU,2
+196,Senegal,SN,SEN,3
+197,Serbia,RS,SRB,3
+198,Seychelles,SC,SYC,3
+199,Sierra Leone,SL,SLE,3
+200,Singapore,SG,SGP,2
+201,Sint Maarten (Dutch part),SX,SXM,3
+202,Slovakia,SK,SVK,3
+203,Slovenia,SI,SVN,3
+204,Solomon Islands,SB,SLB,3
+205,Somalia,SO,SOM,3
+206,South Africa,ZA,ZAF,3
+207,South Georgia and the South Sandwich Islands,GS,SGS,3
+208,South Sudan,SS,SSD,3
+209,Spain,ES,ESP,2
+210,Sri Lanka,LK,LKA,3
+211,Sudan,SD,SDN,3
+212,Suriname,SR,SUR,3
+213,Svalbard and Jan Mayen,SJ,SJM,3
+214,Swaziland,SZ,SWZ,3
+215,Sweden,SE,SWE,2
+216,Switzerland,CH,CHE,2
+217,Syrian; Arab Republic,SY,SYR,4
+218,Taiwan; Province of China,TW,TWN,3
+219,Tajikistan,TJ,TJK,3
+220,Tanzania; United Republic of,TZ,TZA,3
+221,Thailand,TH,THA,2
+222,Timor-Leste,TL,TLS,3
+223,Togo,TG,TGO,3
+224,Tokelau,TK,TKL,3
+225,Tonga,TO,TON,3
+226,Trinidad and Tobago,TT,TTO,3
+227,Tunisia,TN,TUN,3
+228,Turkey,TR,TUR,3
+229,Turkmenistan,TM,TKM,3
+230,Turks and Caicos Islands,TC,TCA,3
+231,Tuvalu,TV,TUV,3
+232,Uganda,UG,UGA,3
+233,Ukraine,UA,UKR,3
+234,United Arab Emirates,AE,ARE,2
+235,United Kingdom,GB,GBR,2
+236,United States,US,USA,2
+237,United States Minor Outlying Islands,UM,UMI,3
+238,Uruguay,UY,URY,3
+239,Uzbekistan,UZ,UZB,3
+240,Vanuatu,VU,VUT,3
+241,Venezuela; Bolivarian Republic of,VE,VEN,3
+242,Viet Nam,VN,VNM,3
+243,Virgin Islands; British,VG,VGB,3
+244,Virgin Islands; U.S.,VI,VIR,3
+245,Wallis and Futuna,WF,WLF,3
+246,Western Sahara,EH,ESH,3
+247,Yemen,YE,YEM,3
+248,Zambia,ZM,ZMB,3
+249,Zimbabwe,ZW,ZWE,3

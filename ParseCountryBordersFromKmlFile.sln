@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseCountryBordersFromKmlF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{D460A6AF-DE53-4454-9632-3D9C8BE0C7DF}"
 	ProjectSection(SolutionItems) = preProject
+		Data\SeedCountry.csv = Data\SeedCountry.csv
 		Data\UIA_World_Countries_Boundaries.kml = Data\UIA_World_Countries_Boundaries.kml
 	EndProjectSection
 EndProject

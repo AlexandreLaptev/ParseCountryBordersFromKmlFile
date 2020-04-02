@@ -14,6 +14,8 @@ namespace ParseCountryBordersFromKmlFile
     {
         static async Task Main(string[] args)
         {
+            StreamWriter streamWriter = null;
+
             try
             {
                 // Get the current directory and make it a DirectoryInfo object.
@@ -28,10 +30,27 @@ namespace ParseCountryBordersFromKmlFile
                 // Hense, the project directory is the great grand-father of the current directory.
                 string projectDirectory = currentDirectory.Parent.Parent.Parent.FullName;
 
-                string kmlFilePath = Path.Combine(projectDirectory, "Data\\UIA_World_Countries_Boundaries.kml");
+                string dataDirectory = Path.Combine(projectDirectory, "Data");
+
+                var countriesSourceFilePath = Path.Combine(dataDirectory, "SeedCountry.csv");
+                var countriesDestinationFilePath = Path.Combine(dataDirectory, "SeedCountryWithBoundary.csv");
+
+                if (!File.Exists(countriesSourceFilePath))
+                    throw new ArgumentException($"File '{countriesSourceFilePath}' does not exist");
+
+                string kmlFilePath = Path.Combine(dataDirectory, "UIA_World_Countries_Boundaries.kml");
+
+                if (!File.Exists(kmlFilePath))
+                    throw new ArgumentException($"File '{kmlFilePath}' does not exist");
+
+                // Read countries from file
+                var countries = FileReader.GetCountries(FileReader.GetFileData(dataDirectory, "SeedCountry.csv"));
 
                 XDocument doc = XDocument.Load(kmlFilePath);
                 List<XElement> placemarks = doc.Descendants().Where(x => x.Name.LocalName == "Placemark").ToList();
+
+                streamWriter = new StreamWriter(path: countriesDestinationFilePath, append: false);
+                await streamWriter.WriteLineAsync("CountryId,Name,Alpha2,Alpha3,AffiliationId,CountryBoundaries");
 
                 foreach (XElement placemark in placemarks)
                 {
@@ -151,7 +170,8 @@ namespace ParseCountryBordersFromKmlFile
 
                         if (geoBorder.Length > 22000)
                         {
-                            await PerisitCountry(countryCode, countryName, geoBorder.AsText());
+                            await SaveCountryInDatabase(countryCode, countryName, geoBorder.AsText());
+                            await SaveCountryInFile(countryCode, countries, geoBorder, streamWriter);
                         }
                     }
                     catch (Exception ex)
@@ -172,11 +192,16 @@ namespace ParseCountryBordersFromKmlFile
                 Console.WriteLine(ex.Message);
                 Console.ResetColor();
             }
+            finally
+            {
+                if (streamWriter != null)
+                    streamWriter.Dispose();
+            }
 
             Console.ReadLine();
         }
 
-        private static async Task PerisitCountry(string countryCode, string countryName, string countryBorder)
+        private static async Task SaveCountryInDatabase(string countryCode, string countryName, string countryBorder)
         {
             using (var sqlConnection = new SqlConnection("Data Source=localhost;Initial Catalog=CountryBoundaries;Integrated Security=True;MultipleActiveResultSets=True"))
             {
@@ -196,57 +221,13 @@ namespace ParseCountryBordersFromKmlFile
                 }
             }
         }
+
+        private static async Task SaveCountryInFile(string countryCode, IEnumerable<Country> countries, DbGeography geoBorder, StreamWriter streamWriter)
+        {
+            var country = countries.FirstOrDefault(c => c.CC2 == countryCode || c.CC3 == countryCode);
+
+            if (country != null)
+                await streamWriter.WriteLineAsync($"{country.CountryId},{country.Name},{country.CC2},{country.CC3},{country.AffiliationId},{geoBorder.AsGml()}");
+        }
     }
 }
-
-/*
-    USE [CountryBoundaries]
-    GO
-
-    SET ANSI_NULLS ON
-    GO
-
-    SET QUOTED_IDENTIFIER ON
-    GO
-
-    CREATE TABLE[dbo].[Country]
-    (
-       [CountryCode][nvarchar](3) NOT NULL,
-       [CountryName] [nvarchar] (40) NOT NULL,
-       [CountryBorder] [geography]
-    NOT NULL,
-    CONSTRAINT[PK_CountryCode] PRIMARY KEY CLUSTERED
-    (
-      [CountryCode] ASC
-    )WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON[PRIMARY]
-    ) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]
-    GO
-
-
-    CREATE PROCEDURE [dbo].[uspInsertCountry]
-    (
-	    @countryCode nvarchar(3),
-	    @countryName nvarchar(40),
-	    @CountryBorder nvarchar(max)
-    )
-    AS
-    BEGIN
-        SET NOCOUNT ON
-
-	    DECLARE @g geography = geography::STGeomFromText(@CountryBorder, 4326);  
-
-        INSERT INTO Country
-		    (
-			    CountryCode, 
-			    CountryName, 
-			    CountryBorder
-		    )
-        values 
-		    (
-			    @countryCode, 
-			    @countryName, 
-			    @g
-		    )
-    END;
-    GO
- */
