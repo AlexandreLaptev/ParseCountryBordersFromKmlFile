@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Xml.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
@@ -46,139 +45,127 @@ namespace ParseCountryBordersFromKmlFile
                 // Read countries from file
                 var countries = FileReader.GetCountries(FileReader.GetFileData(dataDirectory, "SeedCountry.csv"));
 
-                XDocument doc = XDocument.Load(kmlFilePath);
-                List<XElement> placemarks = doc.Descendants().Where(x => x.Name.LocalName == "Placemark").ToList();
-
                 streamWriter = new StreamWriter(path: countriesDestinationFilePath, append: false);
                 await streamWriter.WriteLineAsync("CountryId,Name,Alpha2,Alpha3,AffiliationId,CountryBoundaries");
 
-                foreach (XElement placemark in placemarks)
+                using (var sr = new StreamReader(kmlFilePath))
                 {
-                    var schemaData = placemark.Descendants().Where(p => p.Name.LocalName == "SchemaData").FirstOrDefault();
-                    var simpleData = schemaData.Descendants().Where(s => s.Name.LocalName == "SimpleData").ToList();
+                    // Read all data from the reader
+                    string kml = sr.ReadToEnd();
 
-                    var countryCode = simpleData.Attributes().Where(a => a.Value == "ISO").Select(a => a.Parent.Value).FirstOrDefault();
-                    var countryName = simpleData.Attributes().Where(a => a.Value == "COUNTRY").Select(a => a.Parent.Value).FirstOrDefault();
+                    kml = kml.Replace("xmlns=\"http://earth.google.com/kml/2.0\"", ""); // HACK
+                    kml = kml.Replace("xmlns='http://earth.google.com/kml/2.0'", "");   // DOUBLE HACK
+                    kml = kml.Replace("xmlns=\"http://earth.google.com/kml/2.1\"", ""); // MULTI HACK!
+                    kml = kml.Replace("xmlns='http://earth.google.com/kml/2.1'", "");   // M-M-M-M-M-M-M-MONSTER HACK!!!!
 
-                    var polygons = placemark.Descendants().Where(p => p.Name.LocalName == "Polygon").ToList();
+                    kml = kml.Replace("xmlns=\"http://www.opengis.net/kml/2.2\"", "");  // HACK
+                    kml = kml.Replace("xmlns='http://www.opengis.net/kml/2.2'", "");    // DOUBLE HACK
 
-                    DbGeography geoBorder = null;
-                    DbGeography geoBorderLeft = null;
-                    DbGeography geoBorderRight = null;
+                    // Open the downloaded xml in an System.Xml.XmlDocument to allow for XPath searching
+                    System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                    doc.LoadXml(kml);
 
-                    foreach (var polygon in polygons)
+                    // Try to find some sort of name for this kml from various places
+                    System.Xml.XmlNode node = doc.SelectSingleNode("//Document[name]/name");
+
+                    // Load Placemarks recursively and put them in folders
+                    System.Xml.XmlNode documentNode = doc.SelectSingleNode("/kml/Document");
+                    if (documentNode == null)
+                        documentNode = doc.SelectSingleNode("/kml");
+
+                    if (documentNode != null)
                     {
-                        var coordinates = polygon.Descendants().Where(p => p.Name.LocalName == "coordinates").Select(z => z.Value).FirstOrDefault();
-
-                        var points = coordinates.Split(',').ToList();
-
-                        // Remove first longitude
-                        points.RemoveAt(0);
-
-                        // Remove last latitude
-                        points.RemoveAt(points.Count - 1);
-
-                        if (points.Count() < 5)
+                        // Find Folders and initialize them recursively
+                        System.Xml.XmlNodeList folders = documentNode.SelectNodes("Folder");
+                        foreach (System.Xml.XmlNode folderNode in folders)
                         {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"Country {countryCode}. Coordinates cannot be used to create polygon: {coordinates}");
-                            Console.ResetColor();
+                            // Parse all Placemarks that have a name and Polygon
+                            System.Xml.XmlNodeList placemarkNodes = folderNode.SelectNodes("Placemark");
 
-                            continue;
-                        }
-
-                        // Add end point
-                        points.Add(points[0]);
-
-                        var geoCoordinates = GeographicCoordinate.ConvertStringArrayToGeographicCoordinates(points.ToArray());
-                        var geoPolygon = GeographicCoordinate.ConvertGeoCoordinatesToPolygon(geoCoordinates);
-
-                        if (countryCode != "RU")
-                        {
-                            if (geoBorder == null)
+                            foreach (System.Xml.XmlNode placemarkNode in placemarkNodes)
                             {
-                                geoBorder = geoPolygon;
-                            }
-                            else
-                            {
+                                System.Xml.XmlNodeList simpleDataNodes = placemarkNode.SelectNodes("ExtendedData/SchemaData/SimpleData");
+
+                                var countryCode = simpleDataNodes[2].InnerText;
+                                var countryName = simpleDataNodes[1].InnerText;
+
+                                Console.WriteLine($"Parsing {countryName}...");
+
+                                DbGeography geoBorder = null;
+
+                                System.Xml.XmlNodeList polygonNodes = placemarkNode.SelectNodes("Polygon");
+                                foreach (System.Xml.XmlNode polygonNode in polygonNodes)
+                                {
+                                    // Parse Outer Ring
+                                    System.Xml.XmlNode outerRingNode = polygonNode.SelectSingleNode("outerBoundaryIs/LinearRing/coordinates");
+                                    if (outerRingNode != null)
+                                    {
+                                        var points = GeographicCoordinate.ParseCoordinates(outerRingNode);
+                                        var geoPolygon = GeographicCoordinate.ConvertGeoCoordinatesToPolygon(points);
+
+                                        if (geoBorder == null)
+                                        {
+                                            geoBorder = geoPolygon;
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                geoBorder = geoBorder.Union(geoPolygon);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.WriteLine(ex.Message);
+                                                Console.ResetColor();
+                                            }
+                                        }
+                                    }
+                                }
+
+                                polygonNodes = placemarkNode.SelectNodes("MultiGeometry/Polygon");
+                                foreach (System.Xml.XmlNode polygonNode in polygonNodes)
+                                {
+                                    // Parse Outer Ring
+                                    System.Xml.XmlNode outerRingNode = polygonNode.SelectSingleNode("outerBoundaryIs/LinearRing/coordinates");
+                                    if (outerRingNode != null)
+                                    {
+                                        var points = GeographicCoordinate.ParseCoordinates(outerRingNode);
+                                        var geoPolygon = GeographicCoordinate.ConvertGeoCoordinatesToPolygon(points);
+
+                                        if (geoBorder == null)
+                                        {
+                                            geoBorder = geoPolygon;
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                geoBorder = geoBorder.Union(geoPolygon);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.WriteLine(ex.Message);
+                                                Console.ResetColor();
+                                            }
+                                        }
+                                    }
+                                }
+
                                 try
                                 {
-                                    geoBorder = geoBorder.Union(geoPolygon);
+                                    await SaveCountryInDatabase(countryCode, countryName, geoBorder.AsText());
+                                    await SaveCountryInFile(countryCode, countries, geoBorder, streamWriter);
                                 }
                                 catch (Exception ex)
                                 {
-                                    //Console.ForegroundColor = ConsoleColor.Blue;
-                                    //Console.WriteLine(ex.Message);
-                                    //Console.ResetColor();
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"Country {countryCode} is not added. Error: {ex.Message}");
+                                    Console.ResetColor();
                                 }
                             }
                         }
-                        else // countryCode == "RU"
-                        {
-                            if (points.Count() < 100)
-                            {
-                                continue;
-                            }
-
-                            if (geoCoordinates[0].Longitude > 0)
-                            {
-                                if (geoBorderLeft == null)
-                                {
-                                    geoBorderLeft = geoPolygon;
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        geoBorderLeft = geoBorderLeft.Union(geoPolygon);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        //Console.ForegroundColor = ConsoleColor.Blue;
-                                        //Console.WriteLine(ex.Message);
-                                        //Console.ResetColor();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (geoBorderRight == null)
-                                {
-                                    geoBorderRight = geoPolygon;
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        geoBorderRight = geoBorderRight.Union(geoPolygon);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        //Console.ForegroundColor = ConsoleColor.Blue;
-                                        //Console.WriteLine(ex.Message);
-                                        //Console.ResetColor();
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    try
-                    {
-                        if (countryCode == "RU")
-                            geoBorder = geoBorderLeft;
-
-                        if (geoBorder.Length > 22000)
-                        {
-                            await SaveCountryInDatabase(countryCode, countryName, geoBorder.AsText());
-                            await SaveCountryInFile(countryCode, countries, geoBorder, streamWriter);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Country {countryCode} is not added. Error: {ex.Message}");
-                        Console.ResetColor();
                     }
                 }
 

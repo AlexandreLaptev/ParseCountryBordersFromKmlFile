@@ -66,28 +66,29 @@ namespace ParseCountryBordersFromKmlFile
             }
         }
 
-        public static List<GeoCoordinate> ConvertStringArrayToGeographicCoordinates(string pointString)
+        /// <summary>
+        /// Parse a list of coordinates
+        /// </summary>
+        /// <param name="coordinatesNode">The node containing coordinates to parse</param>
+        public static List<GeoCoordinate> ParseCoordinates(System.Xml.XmlNode coordinatesNode)
         {
-            var points = pointString.Split(',');
+            string coordlist = coordinatesNode.InnerText.Trim();
+            char[] splitters = { '\n', ' ', '\t', ',' };
+            string[] lines = coordlist.Split(splitters);
+
             var coordinates = new List<GeoCoordinate>();
 
-            for (var i = 0; i < points.Length / 2; i++)
+            for (int i = 0; i < lines.Length; i += 2)
             {
-                var geoPoint = points.Skip(i * 2).Take(2).ToList();
-                coordinates.Add(new GeoCoordinate(double.Parse(geoPoint.First()), double.Parse(geoPoint.Last())));
-            }
+                string tokenLongitude = lines[i].Trim();
+                if (tokenLongitude.Length == 0 || tokenLongitude == String.Empty)
+                    continue;
 
-            return coordinates;
-        }
+                string tokenLatitude = lines[i + 1].Trim();
+                if (tokenLatitude.Length == 0 || tokenLatitude == String.Empty)
+                    continue;
 
-        public static List<GeoCoordinate> ConvertStringArrayToGeographicCoordinates(string[] points)
-        {
-            var coordinates = new List<GeoCoordinate>();
-
-            for (var i = 0; i < points.Length; i++)
-            {
-                var coordinate = points[i].Split(' ');
-                coordinates.Add(new GeoCoordinate(double.Parse(coordinate[0]), double.Parse(coordinate[1])));
+                coordinates.Add(new GeoCoordinate(double.Parse(tokenLatitude), double.Parse(tokenLongitude)));
             }
 
             return coordinates;
